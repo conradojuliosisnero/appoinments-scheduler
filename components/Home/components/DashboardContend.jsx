@@ -10,8 +10,11 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import styles from "../styles/home.module.css";
 import DashboardBtnAppoinment from "./DashboardBtnAppoinment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DashboardNav from "../../../commons/DashboardNav";
+import { useDispatch } from "react-redux";
+import DashboardSkeleton from "@/commons/Skeletons/DashboardSkeleton";
+// import { useFetch } from "@/hooks/useFetch";
 
 const locales = {
   es: es,
@@ -26,16 +29,32 @@ const localizer = dateFnsLocalizer({
 });
 
 export default function DashboardContend() {
-  const [events, setEvents] = useState([
-    {
-      title: "Consulta General",
-      start: new Date(2024, 2, 15, 10, 0),
-      end: new Date(2024, 2, 15, 11, 0),
-      patientName: "Juan Pérez",
-      doctorName: "Dr. García",
-      type: "General",
-    },
-  ]);
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const getInitialData = async () => {
+      try {
+        const response = await fetch("/api/quotes");
+        if (response.status !== 200) {
+          throw new Error("Error al obtener los datos");
+        }
+        const data = await response.json();
+        setEvents(data);
+      } catch (error) {
+        setEvents([]);
+        setError("Error al obtener los datos");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getInitialData();
+  }, []);
+
+  if (loading) return <DashboardSkeleton />;
+  if (error) return <p>Ocurrió un error: {error}</p>;
 
   return (
     <>

@@ -1,7 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { set } from "date-fns";
 
 const initialState = {
   newAppoinmentForm: false,
+  userData: {
+    name: "",
+    email: "",
+    gender: "",
+  }
 };
 
 const dashboardSlice = createSlice({
@@ -11,9 +17,12 @@ const dashboardSlice = createSlice({
     toggleAppoinmentForm: (state) => {
       state.newAppoinmentForm = !state.newAppoinmentForm;
     },
+    setUserData: (state, action) => {
+      state.userData = action.payload;
+    },
   },
 });
 
-export const { toggleAppoinmentForm } = dashboardSlice.actions;
+export const { toggleAppoinmentForm, setUserData } = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;

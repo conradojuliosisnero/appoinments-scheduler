@@ -1,0 +1,99 @@
+.main {
+  display: flex;
+  height: calc(100vh - 4rem);
+}
+
+.sidebar {
+  width: 16rem;
+  background-color: white;
+  padding: 1.5rem;
+  border-right: 1px solid #e5e7eb;
+}
+
+.navSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.navItem {
+  height: 2.5rem;
+  background: #eee;
+  border-radius: 0.5rem;
+  animation: pulse 1.5s infinite;
+}
+
+.content {
+  flex: 1;
+  padding: 2rem;
+}
+
+.calendarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.titleSkeleton {
+  width: 200px;
+  height: 2rem;
+  background: #eee;
+  border-radius: 0.25rem;
+  animation: pulse 1.5s infinite;
+}
+
+.buttonSkeleton {
+  width: 150px;
+  height: 2.5rem;
+  background: #eee;
+  border-radius: 0.5rem;
+  animation: pulse 1.5s infinite;
+}
+
+.calendarSkeleton {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  height: calc(100vh - 12rem);
+}
+
+.calendarToolbar {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.toolbarButton {
+  width: 100px;
+  height: 2rem;
+  background: #eee;
+  border-radius: 0.25rem;
+  animation: pulse 1.5s infinite;
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: #e5e7eb;
+}
+
+.calendarCell {
+  aspect-ratio: 1;
+  background: white;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}

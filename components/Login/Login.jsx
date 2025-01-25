@@ -1,14 +1,20 @@
-"use client"
+"use client";
 import { useState } from "react";
 import { UserRound, Lock, Stethoscope } from "lucide-react";
 import styles from "./styles/login.module.css";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { setUserData } from "@/slices/dashboardSlice";
+import { useDispatch } from "react-redux";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
+
+  const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,15 +26,28 @@ export default function Login() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
-      }
-      const response = await fetch("/api/login", options);
-      if (!response.ok) {
+      };
+      const options2 = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const [response, response2] = await Promise.all([
+        fetch("/api/login", options),
+        fetch("/api/user", options2),
+      ]);
+      if (response.status !== 200 || response2.status !== 200) {
         throw new Error("Error al iniciar sesión");
       }
+
       const data = await response.json();
+      const data2 = await response2.json();
+      dispatch(setUserData(data2));
       toast.success("Sesión iniciada correctamente ✅");
+      router.push("/home");
     } catch (error) {
-      toast.error("Ah ocurrio un error al intentar registar 🫤");
+      toast.error("Ah ocurrio un error al intentar iniciar 🫤");
     } finally {
       toast.dismiss();
     }

@@ -1,40 +1,36 @@
 "use client";
 import Link from "next/link";
-import {
-  LayoutDashboard,
-  Calendar as CalendarIcon,
-  Users,
-  FileText,
-  Settings,
-} from "lucide-react";
+import { Calendar as CalendarIcon, LogOut } from "lucide-react";
 import styles from "./home.module.css";
+import { useRouter } from "next/navigation";
 
 export default function DashboardNav() {
+  const router = useRouter();
+
+  const closeSession = async (e) => {
+    e.preventDefault();
+    console.log("Cerrando sesión...");
+    try {
+      const response = await fetch("/api/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        router.push("/");
+      }
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    }
+  };
+
   const navOptions = [
-    {
-      title: "Dashboard",
-      icon: LayoutDashboard,
-      href: "/home",
-    },
     {
       title: "Citas",
       icon: CalendarIcon,
-      href: "/quotes",
-    },
-    {
-      title: "Pacientes",
-      icon: Users,
-      href: "/patients",
-    },
-    {
-      title: "Historias Clínicas",
-      icon: FileText,
-      href: "/clinic-history",
-    },
-    {
-      title: "Configuración",
-      icon: Settings,
-      href: "/settings",
+      href: "/home",
     },
   ];
 
@@ -49,6 +45,15 @@ export default function DashboardNav() {
             </span>
           </Link>
         ))}
+        <Link href="/" onClick={closeSession}>
+          <span
+            className={styles.navItem}
+            style={{ backgroundColor: "#f44336", color: "#fff" }}
+          >
+            <LogOut size={20} />
+            Cerrar Sesión
+          </span>
+        </Link>
       </nav>
     </aside>
   );

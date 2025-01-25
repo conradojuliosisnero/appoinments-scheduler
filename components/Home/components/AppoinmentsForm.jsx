@@ -1,5 +1,8 @@
 "use client";
 import { useState } from "react";
+import styles from "../styles/home.module.css";
+import { useDispatch } from "react-redux";
+import { toggleAppoinmentForm } from "@/slices/dashboardSlice";
 
 export default function AppoinmentsForm({ setShowForm }) {
   const [newAppointment, setNewAppointment] = useState({
@@ -11,8 +14,10 @@ export default function AppoinmentsForm({ setShowForm }) {
     time: "",
   });
 
+  const dispatch = useDispatch();
+
   const handleCloseForm = () => {
-    setShowForm(false);
+    dispatch(toggleAppoinmentForm(false));
     setNewAppointment({
       title: "",
       patientName: "",
@@ -68,8 +73,8 @@ export default function AppoinmentsForm({ setShowForm }) {
         </div>
 
         <div className={styles.formGroup}>
-          <label className={styles.label}>Paciente</label>
-          <input
+          <label className={styles.label}>Descripcion</label>
+          <textarea
             type="text"
             className={styles.input}
             value={newAppointment.patientName}
@@ -79,35 +84,7 @@ export default function AppoinmentsForm({ setShowForm }) {
                 patientName: e.target.value,
               })
             }
-            required
-          />
-        </div>
-
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Doctor</label>
-          <input
-            type="text"
-            className={styles.input}
-            value={newAppointment.doctorName}
-            onChange={(e) =>
-              setNewAppointment({
-                ...newAppointment,
-                doctorName: e.target.value,
-              })
-            }
-            required
-          />
-        </div>
-
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Tipo de Consulta</label>
-          <input
-            type="text"
-            className={styles.input}
-            value={newAppointment.type}
-            onChange={(e) =>
-              setNewAppointment({ ...newAppointment, type: e.target.value })
-            }
+            style={{ resize: "none" }}
             required
           />
         </div>

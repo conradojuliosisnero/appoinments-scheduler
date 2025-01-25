@@ -11,6 +11,7 @@ import {
 import styles from "./styles/register.module.css";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -18,6 +19,8 @@ export default function Register() {
     email: "",
     password: "",
   });
+
+  const router = useRouter();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -36,14 +39,17 @@ export default function Register() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ user_name, email, password }),
+        body: JSON.stringify(formData),
       };
       const response = await fetch("/api/register", options);
-      if (!response.ok) {
+      if (response.status !== 201) {
         throw new Error("Error al registrar usuario");
       }
       const data = await response.json();
       toast.success("usuario registrado correctamente ✅");
+      if (data.auth) {
+        router.push("/home");
+      }
     } catch (error) {
       toast.error("Ah ocurrio un error al intentar registar 🫤");
     } finally {
