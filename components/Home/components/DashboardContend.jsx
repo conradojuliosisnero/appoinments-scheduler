@@ -11,7 +11,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import styles from "../styles/home.module.css";
 import DashboardBtnAppoinment from "./DashboardBtnAppoinment";
 import { useState } from "react";
-import DashboardNav from "./DashboardNav";
+import DashboardNav from "../../../commons/DashboardNav";
 
 const locales = {
   es: es,
@@ -26,7 +26,6 @@ const localizer = dateFnsLocalizer({
 });
 
 export default function DashboardContend() {
-    
   const [events, setEvents] = useState([
     {
       title: "Consulta General",
@@ -40,34 +39,34 @@ export default function DashboardContend() {
 
   return (
     <>
-    <main className={styles.main}>
-      <DashboardNav />
-      <div className={styles.content}>
-        <div className={styles.calendarHeader}>
-          <h1 className={styles.calendarTitle}>Calendario de Citas</h1>
-          <DashboardBtnAppoinment />
-        </div>
+      <main className={styles.main}>
+        <DashboardNav />
+        <div className={styles.content}>
+          <div className={styles.calendarHeader}>
+            <h1 className={styles.calendarTitle}>Calendario de Citas</h1>
+            <DashboardBtnAppoinment />
+          </div>
 
-        <div className={styles.calendar}>
-          <Calendar
-            localizer={localizer}
-            events={events}
-            startAccessor="start"
-            endAccessor="end"
-            culture="es"
-            messages={{
-              next: "Siguiente",
-              previous: "Anterior",
-              today: "Hoy",
-              month: "Mes",
-              week: "Semana",
-              day: "Día",
-              agenda: "Agenda",
-            }}
-          />
+          <div className={styles.calendar}>
+            <Calendar
+              localizer={localizer}
+              events={events}
+              startAccessor="start"
+              endAccessor="end"
+              culture="es"
+              messages={{
+                next: "Siguiente",
+                previous: "Anterior",
+                today: "Hoy",
+                month: "Mes",
+                week: "Semana",
+                day: "Día",
+                agenda: "Agenda",
+              }}
+            />
+          </div>
         </div>
-        </div>
-    </main>
+      </main>
     </>
   );
 }
