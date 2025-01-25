@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useState } from "react";
 import {
   UserRound,
@@ -10,10 +10,11 @@ import {
 } from "lucide-react";
 import styles from "./styles/register.module.css";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 export default function Register() {
   const [formData, setFormData] = useState({
-    nombre: "",
+    user_name: "",
     email: "",
     password: "",
   });
@@ -26,9 +27,28 @@ export default function Register() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Registro:", formData);
+    toast.loading("Registrando...");
+    try {
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user_name, email, password }),
+      };
+      const response = await fetch("/api/register", options);
+      if (!response.ok) {
+        throw new Error("Error al registrar usuario");
+      }
+      const data = await response.json();
+      toast.success("usuario registrado correctamente ✅");
+    } catch (error) {
+      toast.error("Ah ocurrio un error al intentar registar 🫤");
+    } finally {
+      toast.dismiss();
+    }
   };
 
   return (
@@ -48,16 +68,16 @@ export default function Register() {
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.row}>
             <div className={styles.formGroup}>
-              <label htmlFor="nombre" className={styles.label}>
+              <label htmlFor="user_name" className={styles.label}>
                 Nombre
               </label>
               <div className={styles.inputWrapper}>
                 <UserRound className={styles.inputIcon} />
                 <input
-                  id="nombre"
-                  name="nombre"
+                  id="user_name"
+                  name="user_name"
                   type="text"
-                  value={formData.nombre}
+                  value={formData.user_name}
                   onChange={handleChange}
                   className={styles.input}
                   placeholder="Juan"

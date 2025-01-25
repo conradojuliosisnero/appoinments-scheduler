@@ -8,12 +8,11 @@ import toast from "react-hot-toast";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [remember, setRemember] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    toast.loading("Iniciando sesión...");
     try {
       const options = {
         method: "POST",
@@ -27,11 +26,11 @@ export default function Login() {
         throw new Error("Error al iniciar sesión");
       }
       const data = await response.json();
-      toast.success(data.message);
+      toast.success("Sesión iniciada correctamente ✅");
     } catch (error) {
-      setError(error.message);
+      toast.error("Ah ocurrio un error al intentar registar 🫤");
     } finally {
-      setLoading(false);
+      toast.dismiss();
     }
   };
 
@@ -89,14 +88,16 @@ export default function Login() {
                 id="remember"
                 type="checkbox"
                 className={styles.checkbox}
+                checked={remember}
+                onChange={(e) => setRemember(e.target.checked)}
               />
               <label htmlFor="remember" className={styles.rememberLabel}>
                 Recordarme
               </label>
             </div>
-            <a href="#" className={styles.forgotPassword}>
+            <Link href="/reset-password" className={styles.forgotPassword}>
               ¿Olvidó su contraseña?
-            </a>
+            </Link>
           </div>
 
           <button type="submit" className={styles.submitButton}>
