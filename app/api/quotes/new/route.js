@@ -16,7 +16,7 @@ export async function POST(req) {
     if (!jwtValit) {
       return NextResponse.json({ message: "No autorizado" }, { status: 401 });
     }
-    const data = await createQuote(body, jwtValit?.id);
+    const data = await createQuote.createCita(body, jwtValit?.id);
     return NextResponse.json(data, { status: 201 });
   } catch (error) {
     return NextResponse.json(

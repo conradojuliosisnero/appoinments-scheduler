@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from "react";
 import styles from "../styles/filter.module.css";
 import { useDispatch } from "react-redux";

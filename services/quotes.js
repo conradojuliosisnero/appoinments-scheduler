@@ -50,67 +50,106 @@ export async function getQuote(id) {
   }
 }
 
-export async function createQuote(quote, userId) {
-  try {
-    // Obtener citas del localStorage
-    const citasStorage = JSON.parse(localStorage.getItem("citas")) || [];
+export const quoteService = {
+  initializeData: (userId) => {
+    const existingData = localStorage.getItem("citas");
+    if (!existingData) {
+      const initialData = [
+        {
+          id: userId,
+          name: "Usuario",
+          appointments: [],
+        },
+      ];
+      localStorage.setItem("citas", JSON.stringify(initialData));
+      return initialData;
+    }
+    return JSON.parse(existingData);
+  },
 
-    // Encontrar usuario
-    const user = citasStorage.find((user) => user.id === Number(userId));
+  createCita: (userId, cita) => {
+    try {
+      const citas = JSON.parse(localStorage.getItem("citas")) || [];
+      const user = citas.find((u) => u.id === Number(userId));
+
+      if (!user) {
+        throw new Error("Usuario no encontrado");
+      }
+
+      const newCita = {
+        id: Date.now(),
+        ...cita,
+      };
+
+      user.appointments.push(newCita);
+      localStorage.setItem("citas", JSON.stringify(citas));
+
+      console.log("Cita guardada:", newCita); // Debug
+      return newCita;
+    } catch (error) {
+      console.error("Error al crear cita:", error);
+      throw error;
+    }
+  },
+
+  getCitas: (userId) => {
+    const citas = JSON.parse(localStorage.getItem("citas")) || [];
+    const user = citas.find((u) => u.id === Number(userId));
 
     if (!user) {
-      throw new Error("Usuario no encontrado");
+      // Si no existe el usuario, lo creamos
+      const newUser = {
+        id: Number(userId),
+        name: "Usuario",
+        appointments: [],
+      };
+      citas.push(newUser);
+      localStorage.setItem("citas", JSON.stringify(citas));
+      return [];
     }
 
-    // Crear nueva cita
-    const newAppointment = {
-      id: user.appointments.length + 1,
-      title: quote.title,
-      description: quote.description,
-      startDate: quote.startDate,
-      endDate: quote.endDate,
-      status: "Pending",
+    return user.appointments || [];
+  },
+
+  updateCita: (userId, citaId, updates) => {
+    const citas = JSON.parse(localStorage.getItem("citas")) || [];
+    const user = citas.find(u => u.id === Number(userId));
+
+    if (!user) throw new Error("Usuario no encontrado");
+
+    const citaIndex = user.appointments.findIndex(c => c.id === citaId);
+    if (citaIndex === -1) throw new Error("Cita no encontrada");
+
+    user.appointments[citaIndex] = {
+      ...user.appointments[citaIndex],
+      ...updates
     };
 
-    // Añadir cita al usuario
-    user.appointments.push(newAppointment);
+    localStorage.setItem("citas", JSON.stringify(citas));
+    return user.appointments[citaIndex];
+  },
 
-    // Actualizar usuario en el array
-    const updatedCitas = citasStorage.map((u) => (u.id === user.id ? user : u));
+  deleteCita: (userId, citaId) => {
+    try {
+      const citas = JSON.parse(localStorage.getItem("citas")) || [];
+      const user = citas.find((u) => u.id === Number(userId));
 
-    // Guardar en localStorage
-    localStorage.setItem("citas", JSON.stringify(updatedCitas));
+      if (!user) {
+        throw new Error("Usuario no encontrado");
+      }
 
-    return Promise.resolve({
-      success: true,
-      data: user,
-    });
-  } catch (error) {
-    return Promise.reject(error);
-  }
-}
+      user.appointments = user.appointments.filter(
+        (cita) => cita.id !== citaId
+      );
+      localStorage.setItem("citas", JSON.stringify(citas));
 
-// export async function createQuote(quote) {
-//   console.log(quote, "quote");
-//   const options = {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify(quote),
-//   };
-
-//   try {
-//     const response = await fetch(env.quotes, options);
-//     if (!response.ok) {
-//       throw new Error("Error al crear la cita");
-//     }
-//     const data = await response.json();
-//     return data;
-//   } catch (error) {
-//     throw error;
-//   }
-// }
+      return true;
+    } catch (error) {
+      console.error("Error al eliminar cita:", error);
+      throw error;
+    }
+  },
+};
 
 export async function updateQuote(quote) {
   const options = {
