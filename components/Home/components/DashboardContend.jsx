@@ -42,8 +42,6 @@ export default function DashboardContend() {
   // redux
   const userId = useSelector((state) => state.dashboard?.userData?.id);
   const filteredEvents = useSelector((state) => state.dashboard.filtersFind);
-  const showForm = useSelector((state) => state.dashboard.showForm);
-
 
   useEffect(() => {
     if (!userId) return;
