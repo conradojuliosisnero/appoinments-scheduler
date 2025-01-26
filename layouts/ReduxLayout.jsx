@@ -4,8 +4,8 @@ import { store } from "@/store/store";
 
 export default function ReduxLayout({ children }) {
   return (
-    <>
-      <Provider store={store}>{children}</Provider>;
-    </>
+    <div>
+      <Provider store={store}>{children}</Provider>
+    </div>
   );
 }

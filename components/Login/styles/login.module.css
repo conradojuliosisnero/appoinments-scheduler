@@ -173,3 +173,18 @@
 .registerLink:hover {
   color: #1d4ed8;
 }
+
+.inputGroup {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.inputError {
+  border-color: #dc2626;
+}
+
+.error {
+  color: #dc2626;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}

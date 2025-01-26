@@ -1,19 +1,14 @@
-"use client"
-import "react-big-calendar/lib/css/react-big-calendar.css";
 import styles from "./styles/home.module.css";
-import DashboardHeader from "../../commons/DashboardHeader";
-import DashboardContend from "./components/DashboardContend";
-import AppoinmentsForm from "./components/AppoinmentsForm";
-import { useSelector } from "react-redux";
+import dynamic from "next/dynamic";
+
+const DashboardHeader = dynamic(() => import("@/commons/DashboardHeader"));
+const DashboardContend = dynamic(() => import("./components/DashboardContend"));
 
 function Dashboard() {
-  const showForm = useSelector((state) => state.dashboard.newAppoinmentForm);
-
   return (
     <div className={styles.container}>
       <DashboardHeader />
       <DashboardContend />
-      {showForm && <AppoinmentsForm />}
     </div>
   );
 }

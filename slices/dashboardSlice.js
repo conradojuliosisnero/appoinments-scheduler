@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { set } from "date-fns";
 
 const initialState = {
   newAppoinmentForm: false,
@@ -7,8 +6,16 @@ const initialState = {
     name: "",
     email: "",
     gender: "",
-  }
+  },
+  filters: "all",
+  filtersFind: [],
 };
+
+const serializeEvent = (event) => ({
+  ...event,
+  start: event.start.toISOString(),
+  end: event.end.toISOString(),
+});
 
 const dashboardSlice = createSlice({
   name: "dashboard",
@@ -20,9 +27,17 @@ const dashboardSlice = createSlice({
     setUserData: (state, action) => {
       state.userData = action.payload;
     },
+    setFilters: (state, action) => {
+      state.filters = action.payload;
+    },
+    setFiltersFind: (state, action) => {
+      const serializedEvents = action.payload?.map(serializeEvent);
+      state.filtersFind = serializedEvents;
+    },
   },
 });
 
-export const { toggleAppoinmentForm, setUserData } = dashboardSlice.actions;
+export const { toggleAppoinmentForm, setUserData, setFilters, setFiltersFind } =
+  dashboardSlice.actions;
 
 export default dashboardSlice.reducer;

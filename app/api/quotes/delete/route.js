@@ -16,6 +16,7 @@ export async function GET(req) {
     const quotes = Array.isArray(data) ? data : [];
     return NextResponse.json(quotes, { status: 200 });
   } catch (error) {
+    console.error('Error:', error);
     return NextResponse.json(
       { message: "Error del servidor" },
       { status: 500 }

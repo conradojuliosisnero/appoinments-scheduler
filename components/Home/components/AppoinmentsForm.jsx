@@ -3,15 +3,14 @@ import { useState } from "react";
 import styles from "../styles/home.module.css";
 import { useDispatch } from "react-redux";
 import { toggleAppoinmentForm } from "@/slices/dashboardSlice";
+import toast from "react-hot-toast";
 
-export default function AppoinmentsForm({ setShowForm }) {
+export default function AppoinmentsForm() {
   const [newAppointment, setNewAppointment] = useState({
     title: "",
-    patientName: "",
-    doctorName: "",
-    type: "",
     date: "",
     time: "",
+    description: "",
   });
 
   const dispatch = useDispatch();
@@ -28,7 +27,7 @@ export default function AppoinmentsForm({ setShowForm }) {
     });
   };
 
-  const handleSaveAppointment = (e) => {
+  const handleSaveAppointment = async (e) => {
     e.preventDefault();
     const [hours, minutes] = newAppointment.time.split(":");
     const startDate = new Date(newAppointment.date);
@@ -41,13 +40,31 @@ export default function AppoinmentsForm({ setShowForm }) {
       title: newAppointment.title,
       start: startDate,
       end: endDate,
-      patientName: newAppointment.patientName,
-      doctorName: newAppointment.doctorName,
-      type: newAppointment.type,
+      description: newAppointment.patientName,
+      status: "pending",
     };
 
-    setEvents([...events, appointment]);
+    try {
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(appointment),
+      }
+      const response = await fetch("/api/quotes/new", options);
+      if (response.status !== 201) {
+        throw new Error("Error al crear la cita");
+      }
+      const data = await response.json();
+      setEvents([...events, appointment]);
+      toast.success("Cita creada correctamente");
+    } catch (error) {
+      toast.error("Error al crear la cita");
+    } finally {
     handleCloseForm();
+    }
+
   };
 
   return (

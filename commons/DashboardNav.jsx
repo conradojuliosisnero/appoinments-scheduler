@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Calendar as CalendarIcon, LogOut } from "lucide-react";
+import { BookAIcon, Calendar as CalendarIcon, LogOut } from "lucide-react";
 import styles from "./home.module.css";
 import { useRouter } from "next/navigation";
 
@@ -28,10 +28,15 @@ export default function DashboardNav() {
 
   const navOptions = [
     {
-      title: "Citas",
+      title: "Calendario",
       icon: CalendarIcon,
       href: "/home",
     },
+    // {
+    //   title: "Citas",
+    //   icon: BookAIcon,
+    //   href: "/appoinments",
+    // },
   ];
 
   return (

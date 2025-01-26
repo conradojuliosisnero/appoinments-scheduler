@@ -1,12 +1,17 @@
-import { User, Stethoscope } from "lucide-react";
+"use client"
+import { User, Stethoscope, Menu,X } from "lucide-react";
 import styles from "./home.module.css";
 import { useSelector,useDispatch } from "react-redux";
-import { useEffect } from "react";
+import { useEffect,useState } from "react";
 import { setUserData } from "@/slices/dashboardSlice";
+import { useRouter } from "next/navigation";
 
 export default function DashboardHeader() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.dashboard.userData);
+
+  const router = useRouter();
 
   useEffect(() => {
     const getUserData = async () => {
@@ -24,11 +29,17 @@ export default function DashboardHeader() {
     getUserData();
   }, [dispatch]);
 
+  const toggleMobileMenu = () => { 
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  }
+
+
+
   return (
     <header className={styles.header}>
       <div className={styles.logo}>
         <Stethoscope size={24} />
-        <span>MediCitas</span>
+        <span onClick={() => router.push("/home")}>MediCitas</span>
       </div>
       {/* <button className={styles.menuButton} onClick={toggleMobileMenu}>
         {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}

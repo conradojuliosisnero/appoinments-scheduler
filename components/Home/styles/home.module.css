@@ -21,6 +21,10 @@
   font-weight: bold;
 }
 
+.logo span{
+  cursor: pointer;
+}
+
 .userMenu {
   display: flex;
   align-items: center;
@@ -106,7 +110,7 @@
 .calendarTitle {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #1f2937;
+  color: #000000;
 }
 
 .newAppointment {
@@ -147,23 +151,23 @@
   font-weight: 500;
 }
 
-.calendar :global(.rbc-event) {
+/* .calendar :global(.rbc-event) {
   background-color: #2563eb;
   border-radius: 0.25rem;
-}
+} */
 
 .calendar :global(.rbc-today) {
   background-color: #f0f7ff;
 }
 
 .calendar :global(.rbc-toolbar button) {
-  color: #4b5563;
+  color: #000000;
   border: 1px solid #e5e7eb;
 }
 
 .calendar :global(.rbc-toolbar button:hover) {
   background-color: #f3f4f6;
-  color: #1f2937;
+  color: #000000;
 }
 
 .calendar :global(.rbc-toolbar button.rbc-active) {
@@ -271,4 +275,30 @@
 
 .saveButton:hover {
   background-color: #1d4ed8;
+}
+
+.calendar :global(.rbc-event) {
+  border-radius: 0.25rem;
+  padding: 0.25rem;
+}
+
+/* Estados de citas */
+.calendar :global(.rbc-event.pending) {
+  background-color: #fbbf24; 
+  border-color: #f59e0b;
+}
+
+.calendar :global(.rbc-event.confirmed) {
+  background-color: #22c55e; 
+  border-color: #16a34a;
+}
+
+.calendar :global(.rbc-event.in-progress) {
+  background-color: #3b82f6; 
+  border-color: #2563eb;
+}
+
+.calendar :global(.rbc-event.cancelled) {
+  background-color: #ef4444; 
+  border-color: #dc2626;
 }

@@ -1,24 +1,26 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UserRound, Lock, Stethoscope } from "lucide-react";
 import styles from "./styles/login.module.css";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { setUserData } from "@/slices/dashboardSlice";
-import { useDispatch } from "react-redux";
+import { emailRegex } from "@/utils/expressions";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
+  const [validateEmail, setValidateEmail] = useState(true);
+  const [validatePassword, setValidatePassword] = useState(true);
 
   const router = useRouter();
-  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    toast.loading("Iniciando sesión...");
+    toast.loading("Iniciando sesión...", {
+      duration: 300,
+    });
     try {
       const options = {
         method: "POST",
@@ -27,30 +29,31 @@ export default function Login() {
         },
         body: JSON.stringify({ email, password }),
       };
-      const options2 = {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-      const [response, response2] = await Promise.all([
-        fetch("/api/login", options),
-        fetch("/api/user", options2),
-      ]);
-      if (response.status !== 200 || response2.status !== 200) {
-        throw new Error("Error al iniciar sesión");
-      }
-
+      const response = await fetch("/api/login", options);
       const data = await response.json();
-      const data2 = await response2.json();
-      dispatch(setUserData(data2));
-      toast.success("Sesión iniciada correctamente ✅");
-      router.push("/home");
+      if (response.status !== 200) {
+        throw new Error(data.error || "Error al iniciar sesión");
+      }
+      toast.success(data.message);
+      await router.push("/home");
     } catch (error) {
-      toast.error("Ah ocurrio un error al intentar iniciar 🫤");
-    } finally {
-      toast.dismiss();
-    }
+      toast.error(error.message,);
+    } 
+  };
+
+  const handleEmailChange = (e) => {
+    const emailValue = e.target.value;
+    setEmail(emailValue);
+
+    setValidateEmail(emailRegex.test(emailValue));
+  };
+
+  const handlePasswordChange = (e) => {
+    const passwordValue = e.target.value;
+    setPassword(passwordValue);
+
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    setValidatePassword(passwordRegex.test(passwordValue));
   };
 
   return (
@@ -75,11 +78,16 @@ export default function Login() {
                 id="email"
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className={styles.input}
+                onChange={handleEmailChange}
+                className={`${styles.input} ${
+                  !validateEmail && email ? styles.inputError : ""
+                }`}
                 placeholder="ejemplo@correo.com"
                 required
               />
+              {!validateEmail && email && (
+                <p className={styles.error}>Correo electrónico inválido</p>
+              )}
             </div>
           </div>
 
@@ -93,12 +101,20 @@ export default function Login() {
                 id="password"
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={styles.input}
+                onChange={handlePasswordChange}
+                className={`${styles.input} ${
+                  !validatePassword && password ? styles.inputError : ""
+                }`}
                 placeholder="••••••••"
                 required
               />
             </div>
+            {!validatePassword && password && (
+              <p className={styles.error}>
+                La contraseña debe tener al menos 8 caracteres, una letra y un
+                número
+              </p>
+            )}
           </div>
 
           <div className={styles.rememberForgot}>

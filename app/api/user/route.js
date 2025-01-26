@@ -18,7 +18,6 @@ export async function GET(request) {
     return NextResponse.json(user, { status: 200 });
     
   } catch (error) {
-    console.error("Error:", error);
     return NextResponse.json(
       { message: "Error al obtener los datos" },
       { status: 500 }
