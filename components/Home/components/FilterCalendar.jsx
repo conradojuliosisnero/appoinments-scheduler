@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import styles from "../styles/filter.module.css";
 import { useDispatch } from "react-redux";
 import { setFiltersFind, setFilters } from "@/slices/dashboardSlice";
+import { Input, Select } from "antd";
 
 const FilterCalendar = ({ events }) => {
   const [searchTitle, setSearchTitle] = useState("");
@@ -23,25 +24,29 @@ const FilterCalendar = ({ events }) => {
     dispatch(setFiltersFind(filteredEvents));
   }, [statusFilter, searchTitle]);
 
+  const handleStatusChange = (value) => {
+    setStatusFilter(value);
+  };
+
   return (
     <div className={styles.filterSection}>
-      <input
+      <Input
         type="text"
         placeholder="Buscar por título..."
         value={searchTitle}
         onChange={(e) => setSearchTitle(e.target.value)}
         className={styles.searchInput}
       />
-      <select
+      <Select
         value={statusFilter}
-        onChange={(e) => setStatusFilter(e.target.value)}
+        onChange={handleStatusChange}
         className={styles.filterSelect}
       >
-        <option value="all">Todos los estados</option>
-        <option value="pending">Pendiente</option>
-        <option value="confirmed">Confirmado</option>
-        <option value="cancelled">Cancelado</option>
-      </select>
+        <Select.Option value="all">Todos</Select.Option>
+        <Select.Option value="pending">Pendientes</Select.Option>
+        <Select.Option value="confirmed">Completados</Select.Option>
+        <Select.Option value="cancelled">Cancelados</Select.Option>
+      </Select>
     </div>
   );
 };

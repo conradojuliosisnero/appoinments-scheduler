@@ -5,7 +5,6 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import styles from "../styles/home.module.css";
-import DashboardBtnAppoinment from "./DashboardBtnAppoinment";
 import DashboardNav from "../../../commons/DashboardNav";
 import DashboardSkeleton from "@/commons/Skeletons/DashboardSkeleton";
 import ErrorComponent from "@/commons/Errors/Errors";
@@ -190,7 +189,17 @@ export default function DashboardContend() {
 
       {isModalVisible && (
         <Modal
-          title={currentEvent?.id ? "Editar Cita" : "Nueva Cita"}
+          title={
+            <div
+              style={{
+                textAlign: "center",
+                fontSize: "18px",
+                fontWeight: "bold",
+              }}
+            >
+              {currentEvent?.id ? "Editar Cita" : "Nueva Cita"}
+            </div>
+          }
           open={isModalVisible}
           onCancel={() => setIsModalVisible(false)}
           footer={null}
@@ -206,46 +215,62 @@ export default function DashboardContend() {
               name="title"
               label="Título"
               rules={[{ required: true, message: "Ingrese un título" }]}
+              hasFeedback
             >
-              <Input />
+              <Input placeholder="Ingrese un título para la cita" />
             </Form.Item>
             <Form.Item name="description" label="Descripción">
-              <Input.TextArea rows={4} />
+              <Input.TextArea
+                rows={4}
+                placeholder="Ingrese una descripción (opcional)"
+              />
             </Form.Item>
             <Form.Item
               name="date"
               label="Fecha"
               rules={[{ required: true, message: "Seleccione una fecha" }]}
+              hasFeedback
             >
-              <DatePicker format="YYYY-MM-DD" style={{ width: "100%" }} />
+              <DatePicker
+                format="YYYY-MM-DD"
+                style={{ width: "100%" }}
+                placeholder="Seleccione una fecha"
+              />
             </Form.Item>
             <Form.Item
               name="time"
               label="Hora"
               rules={[{ required: true, message: "Seleccione una hora" }]}
+              hasFeedback
             >
-              <TimePicker format="HH:mm" style={{ width: "100%" }} />
+              <TimePicker
+                format="HH:mm"
+                style={{ width: "100%" }}
+                placeholder="Seleccione una hora"
+              />
             </Form.Item>
             <Form.Item name="status" label="Estado">
-              <Select>
+              <Select placeholder="Seleccione el estado de la cita">
                 <Select.Option value="pending">Pendiente</Select.Option>
                 <Select.Option value="confirmed">Confirmada</Select.Option>
                 <Select.Option value="cancelled">Cancelada</Select.Option>
               </Select>
             </Form.Item>
-            <div className={styles.buttonGroup}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: "20px",
+              }}
+            >
               <Button
                 danger
                 onClick={handleDeleteEvent}
-                className={styles.deleteButton}
+                style={{ width: "48%" }}
               >
                 Eliminar
               </Button>
-              <Button
-                type="primary"
-                htmlType="submit"
-                className={styles.saveButton}
-              >
+              <Button type="primary" htmlType="submit" style={{ width: "48%" }}>
                 {currentEvent?.id ? "Actualizar" : "Guardar"}
               </Button>
             </div>
