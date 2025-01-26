@@ -346,6 +346,12 @@
   background-color: #1d4ed8;
 }
 
+.statistics{
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
 @media (max-width: 768px) {
   .modalForm {
     padding: 0.5rem;

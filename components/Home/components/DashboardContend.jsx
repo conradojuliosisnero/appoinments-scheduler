@@ -22,14 +22,13 @@ import {
 import { useSelector } from "react-redux";
 import { quoteService } from "@/services/quotes";
 import toast from "react-hot-toast";
+import Stadistic from "./Stadistic";
 
 const Appoinments = dynamic(() =>
   import("@/components/Appoiments/Appoinments")
 );
-const AppoinmentsForm = dynamic(() =>
-  import("@/components/Home/components/AppoinmentsForm")
-);
 
+// const localizer = BigCalendar.momentLocalizer(moment);
 const localizer = momentLocalizer(moment);
 
 export default function DashboardContend() {
@@ -40,9 +39,11 @@ export default function DashboardContend() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentEvent, setCurrentEvent] = useState(null);
 
+  // redux
   const userId = useSelector((state) => state.dashboard?.userData?.id);
   const filteredEvents = useSelector((state) => state.dashboard.filtersFind);
   const showForm = useSelector((state) => state.dashboard.showForm);
+
 
   useEffect(() => {
     if (!userId) return;
@@ -158,6 +159,11 @@ export default function DashboardContend() {
           <h1 className={styles.calendarTitle}>Calendario de Citas</h1>
           <FilterCalendar events={events} />
         </div>
+        {/* START STADISTIC  */}
+        <Stadistic events={events} />
+        {/* END STADISTIC  */}
+
+        {/* CALENDAR  */}
         <div className={styles.calendar}>
           <Calendar
             localizer={localizer}
@@ -187,6 +193,7 @@ export default function DashboardContend() {
         </div>
       </div>
 
+      {/* MODAL FORM ADD APPOINTMENT  */}
       {isModalVisible && (
         <Modal
           title={
@@ -278,7 +285,6 @@ export default function DashboardContend() {
         </Modal>
       )}
 
-      {showForm && <AppoinmentsForm />}
     </main>
   );
 }
