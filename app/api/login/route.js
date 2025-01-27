@@ -30,11 +30,6 @@ export async function POST(req) {
     process.env.AUTH_SECRET_TOKEN
   );
 
-  const cookieUser = {
-    name: name,
-    email: email,
-  }
-
   const serializedToken = serialize("auth-token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -43,20 +38,12 @@ export async function POST(req) {
     path: "/"
   });
 
-  const serializedUser = serialize("user-data", cookieUser, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: 60 * 60 * 24 * 30,
-  });
-
   const response = NextResponse.json(
     { message: "Login exitoso" },
     { status: 200 }
   );
 
   response.headers.append("Set-Cookie", serializedToken);
-  response.headers.append("Set-Cookie", serializedUser);
 
   return response;
 }
