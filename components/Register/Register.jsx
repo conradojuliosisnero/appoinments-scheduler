@@ -12,34 +12,29 @@ import styles from "./styles/register.module.css";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { emailRegex } from "@/utils/expressions";
 
 export default function Register() {
-  const [formData, setFormData] = useState({
-    user_name: "",
-    email: "",
-    password: "",
-  });
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [validateEmail, setValidateEmail] = useState(true);
+  const [validatePassword, setValidatePassword] = useState(true);
 
   const router = useRouter();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    toast.loading("Registrando...");
+    toast.loading("Registrando...", {
+      duration: 300,
+    });
     try {
       const options = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ name, email, password }),
       };
       const response = await fetch("/api/register", options);
       if (response.status !== 201) {
@@ -47,14 +42,25 @@ export default function Register() {
       }
       const data = await response.json();
       toast.success("usuario registrado correctamente ✅");
-      if (data.auth) {
-        router.push("/home");
-      }
+      await router.push("/");
     } catch (error) {
       toast.error("Ah ocurrio un error al intentar registar 🫤");
-    } finally {
-      toast.dismiss();
     }
+  };
+
+  const handleEmailChange = (e) => {
+    const emailValue = e.target.value;
+    setEmail(emailValue);
+
+    setValidateEmail(emailRegex.test(emailValue));
+  };
+
+  const handlePasswordChange = (e) => {
+    const passwordValue = e.target.value;
+    setPassword(passwordValue);
+
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    setValidatePassword(passwordRegex.test(passwordValue));
   };
 
   return (
@@ -83,8 +89,8 @@ export default function Register() {
                   id="user_name"
                   name="user_name"
                   type="text"
-                  value={formData.user_name}
-                  onChange={handleChange}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   className={styles.input}
                   placeholder="Juan"
                   required
@@ -103,13 +109,18 @@ export default function Register() {
                 id="email"
                 name="email"
                 type="email"
-                value={formData.email}
-                onChange={handleChange}
-                className={styles.input}
+                value={email}
+                onChange={handleEmailChange}
+                className={`${styles.input} ${
+                  !validateEmail && email ? styles.inputError : ""
+                }`}
                 placeholder="ejemplo@correo.com"
                 required
               />
             </div>
+            {!validateEmail && email && (
+              <p className={styles.error}>Correo electrónico inválido</p>
+            )}
           </div>
 
           <div className={styles.formGroup}>
@@ -122,16 +133,29 @@ export default function Register() {
                 id="password"
                 name="password"
                 type="password"
-                value={formData.password}
-                onChange={handleChange}
-                className={styles.input}
+                value={password}
+                onChange={handlePasswordChange}
+                className={`${styles.input} ${
+                  !validatePassword && password ? styles.inputError : ""
+                }`}
                 placeholder="••••••••"
                 required
               />
             </div>
+            {!validatePassword && password && (
+              <p className={styles.error}>
+                La contraseña debe tener al menos 8 caracteres, una letra y un
+                número
+              </p>
+            )}
           </div>
 
-          <button type="submit" className={styles.submitButton}>
+          <button
+            type="submit"
+            className={styles.submitButton}
+            disabled={!validateEmail || !validatePassword}
+            style={{ cursor: !validateEmail || !validatePassword ? "not-allowed" : "pointer" }}
+          >
             Registrarse
           </button>
         </form>

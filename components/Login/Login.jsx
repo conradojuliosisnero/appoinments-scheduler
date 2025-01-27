@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { UserRound, Lock, Stethoscope } from "lucide-react";
 import styles from "./styles/login.module.css";
 import Link from "next/link";

@@ -31,7 +31,6 @@ const dashboardSlice = createSlice({
       state.filters = action.payload;
     },
     setFiltersFind: (state, action) => {
-      console.log("REDUX",action.payload);
       const serializedEvents = action.payload?.map(serializeEvent);
       state.filtersFind = serializedEvents;
     },
