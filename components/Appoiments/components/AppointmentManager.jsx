@@ -1,71 +1,141 @@
-"use client";
-import { useState, useEffect } from "react";
-import SearchBar from "./SearchBar";
-import FilterBar from "./FilterBar";
-import AppointmentList from "./AppointmentList";
-import styles from "../styles/appoinments.module.css";
+import { useState } from "react";
+import { UserPlus, Pencil, Trash2 } from "lucide-react";
+import {
+  Modal,
+  Form,
+  Input,
+  Button,
+  Typography,
+  List,
+  Avatar,
+  message,
+} from "antd";
+import DashboardNav from "@/commons/DashboardNav";
+import styles from "@/commons/home.module.css";
+import appoinments from '../styles/appoinments.module.css'
 
-const AppointmentManager = () => {
-  const [appointments, setAppointments] = useState([]);
-  const [filteredAppointments, setFilteredAppointments] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
+const { Title } = Typography;
 
-  useEffect(() => {
-    // Aquí deberías hacer la llamada a tu API
-    // Por ahora, usaremos datos de ejemplo
-    const fetchAppointments = async () => {
-      // const response = await fetch('tu-api-url');
-      // const data = await response.json();
-      const data = [
-        {
-          id: 1,
-          title: "Consulta General",
-          status: "pendiente",
-          patient: "Juan Pérez",
-        },
-        {
-          id: 2,
-          title: "Revisión Cardiología",
-          status: "completada",
-          patient: "María García",
-        },
-        {
-          id: 3,
-          title: "Examen de Sangre",
-          status: "cancelada",
-          patient: "Carlos Rodríguez",
-        },
-      ];
-      setAppointments(data);
-      setFilteredAppointments(data);
-    };
+export default function Home() {
+  const [usuarios, setUsuarios] = useState([
+    { id: 1, nombre: "Juan Pérez", correo: "juan@example.com" },
+    { id: 2, nombre: "Ana García", correo: "ana@example.com" },
+    { id: 3, nombre: "Miguel López", correo: "miguel@example.com" },
+  ]);
 
-    fetchAppointments();
-  }, []);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [form] = Form.useForm();
 
-  useEffect(() => {
-    const filtered = appointments.filter(
-      (appointment) =>
-        appointment.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        (statusFilter === "all" || appointment.status === statusFilter)
-    );
-    setFilteredAppointments(filtered);
-  }, [searchTerm, statusFilter, appointments]);
+  const handleOpenModal = (usuario = null) => {
+    setCurrentUser(usuario);
+    form.setFieldsValue(usuario || { nombre: "", correo: "" });
+    setIsModalOpen(true);
+  };
+
+  const handleSave = () => {
+    form.validateFields().then((values) => {
+      if (currentUser) {
+        setUsuarios((prev) =>
+          prev.map((user) =>
+            user.id === currentUser.id ? { ...user, ...values } : user
+          )
+        );
+        message.success("Usuario actualizado");
+      } else {
+        setUsuarios((prev) => [...prev, { id: prev.length + 1, ...values }]);
+        message.success("Usuario creado");
+      }
+      setIsModalOpen(false);
+      setCurrentUser(null);
+    });
+  };
+
+  const handleDelete = (id) => {
+    setUsuarios((prev) => prev.filter((user) => user.id !== id));
+    message.success("Usuario eliminado");
+  };
 
   return (
-    <>
-    <div className={styles.container}>
-      <h1 className={styles.title}>Gestión de Citas Médicas</h1>
-      <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-      <FilterBar
-        statusFilter={statusFilter}
-        setStatusFilter={setStatusFilter}
-      />
-      <AppointmentList appointments={filteredAppointments} />
-    </div>
-    </>
-  );
-};
+    <main className={styles.main}>
+      <DashboardNav />
 
-export default AppointmentManager;
+      <div className={appoinments.container}>
+        <header
+        className={appoinments.header}
+        >
+          <Title level={2}>Gestión de Usuarios</Title>
+          <Button
+            type="primary"
+            icon={<UserPlus />}
+            onClick={() => handleOpenModal()}
+          >
+            Añadir Usuario
+          </Button>
+        </header>
+        <List
+          dataSource={usuarios}
+          renderItem={(usuario) => (
+            <List.Item
+              actions={[
+                <Button
+                  icon={<Pencil />}
+                  onClick={() => handleOpenModal(usuario)}
+                  key="edit"
+                >
+                  Editar
+                </Button>,
+                <Button
+                  danger
+                  icon={<Trash2 />}
+                  onClick={() => handleDelete(usuario.id)}
+                  key="delete"
+                >
+                  Eliminar
+                </Button>,
+              ]}
+            >
+              <List.Item.Meta
+                avatar={
+                  <Avatar>{usuario.nombre.charAt(0).toUpperCase()}</Avatar>
+                }
+                title={usuario.nombre}
+                description={usuario.correo}
+              />
+            </List.Item>
+          )}
+        />
+        <Modal
+          title={currentUser ? "Editar Usuario" : "Añadir Usuario"}
+          open={isModalOpen}
+          onOk={handleSave}
+          onCancel={() => setIsModalOpen(false)}
+          okText="Guardar"
+          cancelText="Cancelar"
+        >
+          <Form form={form} layout="vertical">
+            <Form.Item
+              name="nombre"
+              label="Nombre"
+              rules={[
+                { required: true, message: "Por favor ingresa el nombre" },
+              ]}
+            >
+              <Input placeholder="Nombre del usuario" />
+            </Form.Item>
+            <Form.Item
+              name="correo"
+              label="Correo Electrónico"
+              rules={[
+                { required: true, message: "Por favor ingresa el correo" },
+                { type: "email", message: "Correo no válido" },
+              ]}
+            >
+              <Input placeholder="Correo electrónico" />
+            </Form.Item>
+          </Form>
+        </Modal>
+      </div>
+    </main>
+  );
+}

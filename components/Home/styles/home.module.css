@@ -352,6 +352,36 @@
   margin-bottom: 2rem;
 }
 
+.headerContend{
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.titleUsers{
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #000000;
+}
+
+.listUsers{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.userCard{
+  background-color: white;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 16rem;
+}
+
+
 @media (max-width: 768px) {
   .modalForm {
     padding: 0.5rem;

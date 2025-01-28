@@ -1,10 +1,10 @@
-import AppointmentManager from "./components/AppointmentManager"
-import DashboardHeader from "@/commons/DashboardHeader";
+"use client";
+import AppointmentManager from "./components/AppointmentManager";
 
 export default function Appoinments() {
   return (
     <>
-      <AppointmentManager />
+      <AppointmentManager  />
     </>
-  )
+  );
 }

@@ -1,6 +1,9 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
+import "antd/dist/reset.css";
+import { ConfigProvider } from "antd";
+import { App as AntdApp } from "antd";
 import ReduxLayout from "@/layouts/ReduxLayout";
 
 const geistSans = Geist({
@@ -42,7 +45,16 @@ export default function RootLayout({ children }) {
               },
             }}
           />
-          {children}
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: "#2b6cb0",
+                borderRadius: 8,
+              },
+            }}
+          >
+            <AntdApp>{children}</AntdApp>
+          </ConfigProvider>
         </ReduxLayout>
       </body>
     </html>

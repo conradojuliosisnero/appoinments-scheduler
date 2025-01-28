@@ -32,11 +32,11 @@ export default function DashboardNav() {
       icon: CalendarIcon,
       href: "/home",
     },
-    // {
-    //   title: "Citas",
-    //   icon: BookAIcon,
-    //   href: "/appoinments",
-    // },
+    {
+      title: "Usuarios",
+      icon: BookAIcon,
+      href: "/newpage",
+    },
   ];
 
   return (
